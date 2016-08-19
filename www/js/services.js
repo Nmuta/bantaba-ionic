@@ -1,5 +1,26 @@
 angular.module('starter.services', [])
-
+.factory('User', function(){
+  var user = {
+    username:null,
+    loggedin:false,
+    accountType:null
+  }
+  return {
+    getCurrUser: function(){
+      return user;
+    },
+    login: function(userInfo){
+      user.username=userInfo;
+      user.loggedin=true;
+      accountType=userInfo.accountType;
+    },
+    logout: function(){
+      username=null
+      loggedin=false
+      accountType=null
+    }
+  }
+})
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 

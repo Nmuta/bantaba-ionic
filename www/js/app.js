@@ -113,24 +113,34 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
         }
       }
     })
-    .state('tab.login', {
-      url: '/login',
+    .state('tab.account', {
+      url: '/account',
       views: {
-        'tab-login': {
-          templateUrl: 'templates/tab-login.html',
+        'tab-account': {
+          templateUrl: 'templates/tab-account.html',
+          controller: 'AccountCtrl'
+        }
+      }
+    })
+    .state('tab.login', {
+      url: '/account/login',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/account-login.html',
           controller: 'loginCtrl'
         }
       }
     })
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+    .state('tab.register', {
+      url: '/account/register',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/account-register.html',
+          controller: 'registerCtrl'
+        }
       }
-    }
-  });
+    })
+;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');

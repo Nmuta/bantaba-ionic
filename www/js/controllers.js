@@ -1,14 +1,13 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $http) {
+.controller('DashCtrl', function($scope, $http, User) {
   console.log("here");
   $scope.data="this is a test"
 
   $scope.$on('$ionicView.enter',function(){
     console.log("entered dash view");
-    $http.get('http://localhost:3000/').then(function(res){
-      console.log(res);
-    })
+    $scope.user=User.getCurrUser()
+
   })
 })
 
@@ -33,13 +32,12 @@ angular.module('starter.controllers', [])
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
-.controller('loginCtrl', function($scope, $stateParams, $http){
+.controller('loginCtrl', function($scope, $stateParams, $http, User){
   console.log("stuff");
 
   $scope.view={}
   $scope.$on('$ionicView.enter',function(){
     console.log("get ready for login");
-    $scope.view.username="joe"
   })
   $scope.login=function(){
     console.log("gonna login");
@@ -50,25 +48,43 @@ angular.module('starter.controllers', [])
       username:$scope.view.username,
       password:$scope.view.password,
     }).then(function(res){
-      console.log(res);
+      User.login(res.data)
     })
   }
+
+})
+.controller('registerCtrl', function($scope, $stateParams, $http, User){
+  console.log("stuff");
+
+  $scope.view={}
+  $scope.$on('$ionicView.enter',function(){
+    console.log("get ready for login");
+
+  })
   $scope.signup=function(){
-    console.log("gonna login");
+    console.log("gonna signup");
     console.log($scope);
     console.log($scope.view.username);
     console.log($scope.view.password);
-    $http.post('http://localhost:3000/auth/login', {
+    $http.post('http://localhost:3000/auth/signup', {
       username:$scope.view.username,
       password:$scope.view.password,
+      accountType:$scope.view.accountType
     }).then(function(res){
-      console.log(res);
+      User.login(res.data)
     })
   }
 })
-
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, $http, User) {
   $scope.settings = {
     enableFriends: true
   };
+  $scope.logout=function(){
+    User.logout();
+    $http.get('http://localhost:3000/auth/logout', {
+
+    }).then(function(res){
+
+    })
+  }
 });

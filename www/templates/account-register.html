@@ -1,0 +1,20 @@
+<ion-view view-title="Register">
+  <ion-content>
+    <div class="list">
+      <label class="item item-input">
+        <input type="text" placeholder="Username" ng-model="view.username"/>
+      </label>
+      <label class="item item-input">
+        <input type="password" placeholder="Password" ng-model="view.password"/>
+      </label>
+      <div class="item item-divider">
+           Account Type
+         </div>
+      <ion-radio ng-model="view.accountType" ng-value="standard">Standard</ion-radio>
+<ion-radio ng-model="view.account_type" ng-value="performer">Performer</ion-radio>
+      <button ng-click="signup()" class="button button-calm">
+        Register
+      </button>
+    </div>
+  </ion-content>
+</ion-view>
