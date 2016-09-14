@@ -49,7 +49,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
   $httpProvider.defaults.transformRequest = [function(data) {
     return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
   }];
-  $httpProvider.defaults.withCredentials = true;
+  // $httpProvider.defaults.withCredentials = true;
 
 })
 .run(function($ionicPlatform) {
@@ -94,7 +94,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
       }
     }
   })
-
+  .state('tab.following', {
+    url: '/following',
+    views: {
+      'tab-following': {
+        templateUrl: 'templates/tab-following.html',
+        controller: 'followingCtrl'
+      }
+    }
+  })
+  .state('tab.show', {
+    url: '/show',
+    views: {
+      'tab-show': {
+        templateUrl: 'templates/tab-show.html',
+        controller: 'showCtrl'
+      }
+    }
+  })
+  .state('tab.event-show', {
+    url: '/eventShow',
+    views: {
+      'tab-show': {
+        templateUrl: 'templates/event.html',
+        controller: 'EventDisplay'
+      }
+    }
+  })
+  .state('tab.performer-show', {
+    url: '/performerShow',
+    views: {
+      'tab-show': {
+        templateUrl: 'templates/performer.html',
+        controller: 'PerformerDisplay'
+      }
+    }
+  })
   .state('tab.chats', {
       url: '/chats',
       views: {
@@ -131,6 +166,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
         }
       }
     })
+
     .state('tab.register', {
       url: '/account/register',
       views: {
@@ -139,10 +175,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
           controller: 'registerCtrl'
         }
       }
+    }).state('main', {
+      url: '/',
+      templateUrl: 'templates/tab-account.html',
+      controller: 'LoginCtrl'
     })
-;
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/');
 
 });

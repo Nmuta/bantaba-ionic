@@ -3,69 +3,76 @@ angular.module('starter.services', [])
   var user = {
     username:null,
     loggedin:false,
-    accountType:null
+    accountType:null,
+    id:null
   }
+
   return {
     getCurrUser: function(){
       return user;
     },
     login: function(userInfo){
-      user.username=userInfo;
+      user.username=userInfo.username;
       user.loggedin=true;
+      user.id=userInfo.id
       accountType=userInfo.accountType;
     },
     logout: function(){
-      username=null
-      loggedin=false
-      accountType=null
+      user.username=null
+      user.loggedin=false
+      user.accountType=null
+      user.id=null
+
     }
   }
 })
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
+.factory('Data', function(User, $http){
 
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
-
+  var data={
+    events:{},
+    performers:{},
+    following:{}
+  }
+  var selected={
+    events:null,
+    performers:null
+  }
   return {
-    all: function() {
-      return chats;
+    update:function(){
+      return $http.get('http://localhost:3000/events/').then(function(res){
+        return $http.get('http://localhost:3000/performers/').then(function(res2){
+          res.data.forEach(function(event){
+            data.events[event.id]=event;
+          })
+          res2.data.forEach(function(performer){
+            data.performers[performer.id]=performer;
+          })
+          return $http.get(`http://localhost:3000/users/following/${User.getCurrUser().id}`).then(function(res){
+            data.following={ events:res.data.events,
+              performers:res.data.performers
+            }
+          })
+        })
+      })
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+
+    getData:function(){
+      return data
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
+    select:function(type, id){
+      selected[type]=id;
+    },
+    getSelected:function(type){
+      return data[type][selected[type]]
+    },
+    getEventsPerformers:function(event){
+      return $http.get(`http://localhost:3000/events/performers/${event.id}`).then(function(res){
+        var performers={}
+        res.data.forEach(function(performer){
+          performers[performer.id]=performer;
+        })
+        return performers;
+      })
     }
-  };
-});
+  }
+})

@@ -1,0 +1,29 @@
+<ion-view view-title="Event">
+  <ion-content>
+    <div>
+    {{view.event.name}}
+    </div>
+    <div>
+    Starts:{{view.event.start}}
+    </div>
+    <div>
+    Ends:{{view.event.end}}
+    </div>
+    <div class="list">
+      <div class="item item-divider" >
+        <div class="ion-android-star" style="display:inline-block; margin-right:5px"></div>
+        Performers
+        <a class="ion-plus" ng-click="addPerson()" style="display:inline-block; float: right; color:#F9F9F9">
+        </a>
+      </div>
+
+      <a ng-repeat="performer in view.event.performers" class="item" ng-click="display(performer)" >
+        {{performer.name}}
+      </a>
+    </div>
+    <button>
+      <button ng-click="follow()" class="button button-calm">
+        Follow This Event
+      </button>
+  </ion-content>
+</ion-view>
