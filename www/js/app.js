@@ -138,10 +138,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
           templateUrl: 'templates/tab-account.html',
           controller: 'AccountCtrl'
         },
-      
+
       }
     })
-
+    .state('new-event', {
+      url: '/new-event',
+      templateUrl: 'templates/new-event.html',
+      controller: 'NewEventCtrl'
+    })
     .state('login', {
       url: '/account/login',
       templateUrl: 'templates/account-login.html',

@@ -253,13 +253,15 @@ angular.module('starter.controllers', [])
     User.loggedRedirect();
     window.localStorage.removeItem("token");
     User.loggedRedirect();
-
   }
+  $scope.view={}
   $scope.$on('$ionicView.enter', function(){
-    console.log('in admin ctrlr');
     $scope.user=User.getCurrUser();
-    console.log($scope.user);
+    $scope.view.createEvent=false;
   })
+  $scope.toCreateEvent=function(){
+    $state.go('new-event')
+  }
 })
 .controller('SplashCtrl', function($scope, $state, $http, User) {
   $scope.settings = {
@@ -286,6 +288,36 @@ angular.module('starter.controllers', [])
     window.localStorage.removeItem("token");
     User.loggedRedirect();
 
+  }
+})
+.controller('NewEventCtrl', function($scope, $state, $http, User){
+  $scope.$on('$ionicView.enter', function(){
+    console.log("sfhaflkjasfhjkasfjlasdf");
+    $scope.input={}
+  })
+  $scope.toAccount=function(){
+    $state.go('tab.account')
+  }
+  $scope.logInput=function(){
+    console.log($scope.input);
+    console.log(typeof $scope.input.endDate);
+    console.log($scope.input.endDate.toString());
+    console.log($scope.input);
+    console.log(typeof $scope.input.endDate);
+  }
+  $scope.submitEvent=function(){
+    //do post request here,
+
+    $http.post('http://localhost:3000/events/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
+      city:$scope.input.city,
+      address:$scope.input.address,
+      startDate:$scope.input.startDate.toString(),
+      endDate:$scope.input.endDate.toString(),
+      state:$scope.input.state}).then(function(res){
+      console.log(res);
+      $state.go('tab.account')
+      //redirect to wherever
+    })
   }
 })
 ;
