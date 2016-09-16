@@ -1,11 +1,18 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
-    <a href="#/tab/account/login" class="button button-calm">Login</a>
     <button ng-click="logout()" class="button button-calm">
       Logout
     </button>
-    <a href="#/tab/account/register" class="button button-calm">Register</a>
     </ion-list>
+    <!-- if admin, admin shit goes here ng-show... make sure you're validating stuff all the time-->
+    <!-- if performer, performer shit goes here -->
+    <div ng-show="user.accountType===1">
+      <!--create events and performers  -->
+      <!--filter by things, populate list, bring to edit page (maybe have that just be an extension of the normal show pages or something)  -->
+      <!--approving stuff (how do you do this........)-have the performer request to perform at the event, and the admin validates them
+          -that'd need another collumn in the event+performers table. Keep the validated thing n the performers table- note of the stories seem to refrence it... -> make it irrelevent for now, possibly implement it later?
+      -->
+    </div>
   </ion-content>
 </ion-view>

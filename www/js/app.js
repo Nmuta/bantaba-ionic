@@ -130,55 +130,33 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
       }
     }
   })
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
+
     .state('tab.account', {
       url: '/account',
       views: {
         'tab-account': {
           templateUrl: 'templates/tab-account.html',
           controller: 'AccountCtrl'
-        }
-      }
-    })
-    .state('tab.login', {
-      url: '/account/login',
-      views: {
-        'tab-account': {
-          templateUrl: 'templates/account-login.html',
-          controller: 'loginCtrl'
-        }
+        },
+      
       }
     })
 
-    .state('tab.register', {
+    .state('login', {
+      url: '/account/login',
+      templateUrl: 'templates/account-login.html',
+      controller: 'loginCtrl'
+    })
+
+    .state('register', {
       url: '/account/register',
-      views: {
-        'tab-account': {
-          templateUrl: 'templates/account-register.html',
-          controller: 'registerCtrl'
-        }
-      }
+      templateUrl: 'templates/account-register.html',
+      controller: 'registerCtrl'
+
     }).state('main', {
       url: '/',
-      templateUrl: 'templates/tab-account.html',
-      controller: 'LoginCtrl'
+      templateUrl: 'templates/splash.html',
+      controller: 'SplashCtrl'
     })
 
   // if none of the above states are matched, use this as the fallback

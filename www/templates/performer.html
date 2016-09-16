@@ -3,7 +3,12 @@
     <div>
     {{view.performer.name}}
     </div>
-
+    <button ng-show="!view.following" ng-click="follow()" class="button button-calm">
+      Follow This Performer
+    </button>
+    <button ng-show="view.following" ng-click="unFollow()" class="button button-calm">
+      Unfollow This Performer
+    </button>
     <!-- <div class="list">
       <div class="item item-divider" >
         <div class="ion-android-star" style="display:inline-block; margin-right:5px"></div>

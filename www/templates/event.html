@@ -21,9 +21,13 @@
         {{performer.name}}
       </a>
     </div>
-    <button>
-      <button ng-click="follow()" class="button button-calm">
+      <button ng-show="!view.following" ng-click="follow()" class="button button-calm">
         Follow This Event
       </button>
+      <button ng-show="view.following" ng-click="unFollow()" class="button button-calm">
+        Unfollow This Event
+      </button>
+      <button ng-click="toSearch()">Search</button>
+
   </ion-content>
 </ion-view>

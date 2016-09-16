@@ -1,8 +1,28 @@
 <!-- needs to display all events and performers the user is following, allow for ordering and filtering (this can easily all be done clientside)
 ie: which ones are near me, which are the soonest etc should this be on the main page? yeah probably...-->
-<ion-view view-title="Following">
+<ion-view view-title="Search">
   <ion-content class="padding">
+    <!-- //city eventName performerName -->
+    <label class="item item-input item-select searchBy" style="background-color:#1E1F21;border: 1px solid #3E3F41">
+      <input type="search" ng-model="view.search.text" placeholder="Search" style="color:#979797">
+
+                  <div class="input-label" style="color:#AAAAAA">
+                    Search By
+                  </div>
+                    <select ng-model="view.search.type" style="background-color:#1E1F21; color:#AAAAAA">
+                      <option value="state">State</option>
+                      <option  selected value="name">Name</option>
+
+                    </select>
+
+    </label>
+    <button ng-click="doSearch()">
+      Search
+    </button>
+    <div ng-show="data.events || data.performers">
+    <h1>Results</h1>
     <h1>Events</h1>
+
       <div ng-repeat="event in data.events">
         <h4 ng-click="showEvent(event)">{{event.name}}</h4> <!-- on click, go to display page for the event-->
       </div>
@@ -10,5 +30,6 @@ ie: which ones are near me, which are the soonest etc should this be on the main
       <div ng-repeat="performer in data.performers">
         <h4 ng-click="showPerformer(performer)">{{performer.name}}</h4> <!-- on click, go to display page for the event-->
       </div>
+    </div>
   </ion-content>
 </ion-view>

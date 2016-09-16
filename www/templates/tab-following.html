@@ -3,14 +3,24 @@ ie: which ones are near me, which are the soonest etc should this be on the main
 <ion-view view-title="Following">
   <ion-content class="padding">
     <h1>Events</h1>
-      <p>You are following:</p>
-      <div ng-repeat="event in following.events">
-        <h4>{{event.name}}</h4> <!-- on click, go to display page for the event-->
+      <div ng-show="following.events.length>0">
+        <p>You are following:</p>
+        <div ng-repeat="event in following.events">
+          <h4 ng-click=showEvent(event)>{{event.name}}</h4> <!-- on click, go to display page for the event-->
+        </div>
+      </div>
+      <div ng-show="following.events.length===0">
+        <p>You are not currently following any performers</p>
       </div>
     <h1>Performers</h1>
-      <p>You are following:</p>
-      <div ng-repeat="performer in following.performers">
-        <h4>{{performer.name}}</h4> <!-- on click, go to display page for the event-->
+      <div ng-show="following.performers.length>0">
+        <p>You are following:</p>
+        <div ng-repeat="performer in following.performers">
+          <h4 ng-click=showPerformer(performer)>{{performer.name}}</h4> <!-- on click, go to display page for the event-->
+        </div>
+      </div>
+      <div ng-show="following.performers.length===0">
+        <p>You are not currently following any performers</p>
       </div>
   </ion-content>
 </ion-view>

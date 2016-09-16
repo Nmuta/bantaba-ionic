@@ -1,13 +1,14 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
-    <div ng-show="view.user.loggedin">
-      <h1>You are currently logged in as {{view.user.username}}, a {{view.user.accountType}} account</h1>
+  
+    <h1>Events in your state</h1>
+
+    <div class="card" ng-repeat="event in view.events">
+      <h4 ng-click="showEvent(event)">{{event.name}}</h4> <!-- on click, go to display page for the event-->
     </div>
-    <div ng-show="!view.user.loggedin">
-      <h1>You are not currently logged in</h1>
-    </div>
-    <button ng-click="testLogin()" class="button button-calm">
-      test login
+    <button ng-click="logout()" class="button button-calm">
+      Logout
     </button>
+
   </ion-content>
 </ion-view>

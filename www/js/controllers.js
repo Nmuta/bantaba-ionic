@@ -1,18 +1,18 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $http, User) {
+.controller('DashCtrl', function($scope, $state,Data, $http, User) {
+
   $scope.view={}
   $scope.data="this is a test"
-  $http.post('http://localhost:3000/auth/getUser', {token:window.localStorage.getItem('token')}).then(function(res){
-    if(res.data.error!=true){
-      console.log(res.data);
-      User.login(res.data)
-    }
-  })
+
   $scope.$on('$ionicView.enter',function(){
     console.log("entered dash view");
+    User.loggedRedirect();
     $scope.view.user=User.getCurrUser()
-
+    Data.getInState().then(function(res){
+      console.log(res);
+        $scope.view.events=res.data;
+    })
   })
   $scope.testLogin=function(){
     console.log($scope.view.user);
@@ -25,29 +25,21 @@ angular.module('starter.controllers', [])
       // }
     })
   }
+  $scope.logout=function(){
+    User.logout();
+    User.loggedRedirect();
+    window.localStorage.removeItem("token");
+    User.loggedRedirect();
+
+  }
+  $scope.showEvent=function(event){
+    Data.select('events',event)
+    console.log('this');
+    $state.go('tab.event-show')
+  }
 })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-  $scope.$on('$ionicView.enter',function(){
-    console.log("entered chats view");
-  })
-  console.log("in the chat");
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
-})
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
 .controller('loginCtrl', function($scope, $stateParams, $http, User, $location, $state){
   console.log("stuff");
 
@@ -78,7 +70,7 @@ angular.module('starter.controllers', [])
   }
 
 })
-.controller('registerCtrl', function($scope, $stateParams, $http, User){
+.controller('registerCtrl', function($scope,$state,  $stateParams, $http, User){
   console.log("stuff");
 
   $scope.view={}
@@ -95,10 +87,12 @@ angular.module('starter.controllers', [])
     $http.post('http://localhost:3000/auth/signup', {
       username:$scope.view.username,
       password:$scope.view.password,
-      accountType:$scope.view.accountType
+      accountType:$scope.view.accountType,
+
     }).then(function(res){
       window.localStorage.setItem("token", res.data.token);
       User.login(res.data)
+      $state.go('tab.following')
     })
   }
   $scope.log=function(){
@@ -109,10 +103,11 @@ angular.module('starter.controllers', [])
     console.log($scope.view.accountType);
   }
 })
-.controller('followingCtrl', function($scope, $http,Data,User){
+.controller('followingCtrl', function($scope, $state, $http,Data,User){
   $scope.following={}
 
   $scope.$on('$ionicView.enter',function(){
+    User.loggedRedirect();
     console.log("hideKeyboardAccessoryBar");
     $scope.user=User.getCurrUser()
     $scope.update();
@@ -120,8 +115,8 @@ angular.module('starter.controllers', [])
   $scope.update=function(){
     console.log("doing request");
     if($scope.user.loggedin===true){
-      Data.update().then(function(res){
-        $scope.following=Data.getData().following;
+      Data.updateFollowed().then(function(following){
+        $scope.following=following;
         console.log($scope.following);
       })
     }
@@ -130,38 +125,60 @@ angular.module('starter.controllers', [])
       console.log('not logged in');
     }
   }
-
+  $scope.showEvent=function(event){
+    Data.select('events',event)
+    console.log('this');
+    $state.go('tab.event-show')
+  }
+  $scope.showPerformer=function(performer){
+    Data.select('performers',performer)
+    $state.go('tab.performer-show')
+  }
 })
 .controller('showCtrl', function($scope, $http, $state, User, Data){
   $scope.view={}
   $scope.data={}
+  $scope.view.search={};
   $scope.$on('$ionicView.enter',function(){
-    $scope.getAll();
+    User.loggedRedirect();
+
   })
   $scope.getAll=function(){
     Data.update().then(function(){
       $scope.data=Data.getData()
       console.log($scope.data);
     })
-
   }
   $scope.showEvent=function(event){
-    Data.select('events',event.id)
+    Data.select('events',event)
     console.log('this');
     $state.go('tab.event-show')
   }
   $scope.showPerformer=function(performer){
-    Data.select('performers',performer.id)
+    Data.select('performers',performer)
     $state.go('tab.performer-show')
+  }
+  $scope.doSearch=function(){
+    console.log('here');
+    console.log($scope.view.search);
+    Data.search($scope.view.search).then(function(out){
+      $scope.data=out;
+    })
+    //do the different api requests based on selected option
   }
 })
 .controller('EventDisplay', function($scope, $http, $state, User, Data){
   $scope.view={}
   $scope.$on('$ionicView.enter',function(){
     console.log('here');
+    User.loggedRedirect();
 
     $scope.view.event=Data.getSelected('events')
     console.log($scope.view.event);
+    Data.updateFollowed().then(function(data){
+        $scope.view.following= data.events.indexOf($scope.view.event)!=-1
+    })
+
     Data.getEventsPerformers($scope.view.event).then(function(performers){
       console.log(performers);
       $scope.view.event.performers=performers
@@ -170,26 +187,105 @@ angular.module('starter.controllers', [])
   })
   $scope.follow=function(){
     $http.get(`http://localhost:3000/users/followE/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
-      console.log(res);
+      if(res.data){
+        Data.setFollowed(res.data);
+        $scope.view.following=true;
+      }
     })
+  }
+  $scope.unFollow=function(){
+    $http.get(`http://localhost:3000/users/unfollowE/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+      if(res.data){
+        Data.setFollowed(res.data);
+        $scope.view.following=false;
+      }
+    })
+  }
+  $scope.toSearch=function(){
+    $state.go('tab.show')
   }
 })
 .controller('PerformerDisplay', function($scope, $http, $state, User, Data){
   $scope.view={}
   $scope.$on('$ionicView.enter',function(){
     console.log('here');
-
+    User.loggedRedirect();
     $scope.view.performer=Data.getSelected('performers')
+    Data.updateFollowed().then(function(data){
+      console.log(data);
+        $scope.view.following=false
+        for(var i=0; i<data.performers.length; i++){
+          if(data.performers[i].performer_id===$scope.view.performer.performer_id){
+            $scope.view.following=true
+          }
+        }
+    })
+
     console.log($scope.view.performer);
 
   })
+  $scope.follow=function(){
+    $http.get(`http://localhost:3000/users/followP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
+      if(res.data){
+        Data.setFollowed(res.data);
+        $scope.view.following=true;
+      }
+    })
+  }
+  $scope.unFollow=function(){
+    $http.get(`http://localhost:3000/users/unfollowP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
+      if(res.data){
+        Data.setFollowed(res.data);
+        $scope.view.following=false;
+      }
+    })
+  }
+  $scope.toSearch=function(){
+    $state.go('tab.show')
+  }
 })
-.controller('AccountCtrl', function($scope, $http, User) {
+.controller('AccountCtrl', function($scope, $state, $http, User) {
   $scope.settings = {
     enableFriends: true
   };
   $scope.logout=function(){
     User.logout();
+    User.loggedRedirect();
     window.localStorage.removeItem("token");
+    User.loggedRedirect();
+
   }
-});
+  $scope.$on('$ionicView.enter', function(){
+    console.log('in admin ctrlr');
+    $scope.user=User.getCurrUser();
+    console.log($scope.user);
+  })
+})
+.controller('SplashCtrl', function($scope, $state, $http, User) {
+  $scope.settings = {
+    enableFriends: true
+  };
+  $scope.$on('$ionicView.enter',function(){
+    console.log("here");
+    var token=window.localStorage.getItem("token");
+    console.log(token);
+    if(token){
+      $http.post('http://localhost:3000/auth/getUser', {token:token}).then(function(res){
+        console.log("this");
+        if(res.data.error!=true){
+          console.log(res.data);
+          User.login(res.data)
+          $state.go('tab.dash')
+        }
+      })
+    }
+  })
+  $scope.logout=function(){
+    User.logout();
+    User.loggedRedirect();
+    window.localStorage.removeItem("token");
+    User.loggedRedirect();
+
+  }
+})
+;
