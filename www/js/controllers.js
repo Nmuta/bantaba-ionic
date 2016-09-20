@@ -176,7 +176,10 @@ angular.module('starter.controllers', [])
     $scope.view.event=Data.getSelected('events')
     console.log($scope.view.event);
     Data.updateFollowed().then(function(data){
-        $scope.view.following= data.events.indexOf($scope.view.event)!=-1
+      console.log(data);
+        $scope.view.following= data.events.filter(function(event){
+          return (event.event_id===$scope.view.event.id);
+        }).length>0;
     })
 
     Data.getEventsPerformers($scope.view.event).then(function(performers){
@@ -261,6 +264,9 @@ angular.module('starter.controllers', [])
   })
   $scope.toCreateEvent=function(){
     $state.go('new-event')
+  }
+  $scope.toCreatePerformer=function(){
+    $state.go('new-performer')
   }
 })
 .controller('SplashCtrl', function($scope, $state, $http, User) {

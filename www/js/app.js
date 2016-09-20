@@ -146,6 +146,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
       templateUrl: 'templates/new-event.html',
       controller: 'NewEventCtrl'
     })
+    .state('new-performer', {
+      url: '/new-performer',
+      templateUrl: 'templates/new-performer.html',
+      controller: 'NewPerformerCtrl'
+    })
     .state('login', {
       url: '/account/login',
       templateUrl: 'templates/account-login.html',
