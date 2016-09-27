@@ -45,6 +45,7 @@ angular.module('starter.controllers', [])
 
   $scope.view={}
   $scope.$on('$ionicView.enter',function(){
+    $scope.view={}
     console.log("get ready for login");
   })
   $scope.login=function(){
@@ -167,12 +168,12 @@ angular.module('starter.controllers', [])
     //do the different api requests based on selected option
   }
 })
-.controller('EventDisplay', function($scope, $http, $state, User, Data){
+.controller('EventDisplay', function($scope, $http, $ionicPopup, $state, User, Data){
   $scope.view={}
   $scope.$on('$ionicView.enter',function(){
     console.log('here');
     User.loggedRedirect();
-
+    $scope.user=User.getCurrUser();
     $scope.view.event=Data.getSelected('events')
     console.log($scope.view.event);
     Data.updateFollowed().then(function(data){
@@ -221,11 +222,26 @@ angular.module('starter.controllers', [])
     }
     $scope.view.editing=!$scope.view.editing
   }
+  $scope.confirmDelete = function() {
+     var confirmPopup = $ionicPopup.confirm({
+       title: 'Delete Person',
+       template: 'Are you sure you want to delete this event?'
+     });
+
+     confirmPopup.then(function(res) {
+       if(res) {
+         $http.get('http://localhost:3000'+'/events/delete/'+$scope.view.event.id+"/"+window.localStorage.getItem('token')).then(function(res){
+           $state.go('tab.show')
+
+         })
+       }
+     });
+   };
   $scope.toSearch=function(){
     $state.go('tab.show')
   }
 })
-.controller('PerformerDisplay', function($scope, $http, $state, User, Data){
+.controller('PerformerDisplay', function($scope, $http, $ionicPopup, $state, User, Data){
   $scope.view={}
   $scope.$on('$ionicView.enter',function(){
     console.log('here');
@@ -273,6 +289,21 @@ angular.module('starter.controllers', [])
     }
     $scope.view.editing=!$scope.view.editing
   }
+  $scope.confirmDelete = function() {
+     var confirmPopup = $ionicPopup.confirm({
+       title: 'Delete Person',
+       template: 'Are you sure you want to delete this event?'
+     });
+
+     confirmPopup.then(function(res) {
+       if(res) {
+         $http.get('http://localhost:3000'+'/performers/delete/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token')).then(function(res){
+           $state.go('tab.show')
+
+         })
+       }
+     });
+   };
   $scope.toSearch=function(){
     $state.go('tab.show')
   }

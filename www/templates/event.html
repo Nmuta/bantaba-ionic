@@ -119,9 +119,13 @@ start<ion-view view-title="Event">
       <button ng-show="view.following" ng-click="unFollow()" class="button button-calm">
         Unfollow This Event
       </button>
+
       <button ng-click="toSearch()">Search</button>
-      <button ng-show="!view.editing" ng-click="edit()">Edit</button>
-      <button ng-show="view.editing" ng-click="edit()">Save</button>
-      <button ng-click="log()">log</button>
+      <div ng-show="user.accountType===1">
+        <button ng-click="confirmDelete()">Delete</button>
+
+        <button ng-show="!view.editing" ng-click="edit()">Edit</button>
+        <button ng-show="view.editing" ng-click="edit()">Save</button>
+      </div>
   </ion-content>
 </ion-view>
