@@ -181,7 +181,8 @@ angular.module('starter.controllers', [])
           return (event.event_id===$scope.view.event.id);
         }).length>0;
     })
-
+    $scope.view.event.start=new Date($scope.view.event.start);
+    $scope.view.event.end=new Date($scope.view.event.end);
     Data.getEventsPerformers($scope.view.event).then(function(performers){
       console.log(performers);
       $scope.view.event.performers=performers
@@ -204,6 +205,22 @@ angular.module('starter.controllers', [])
       }
     })
   }
+
+  $scope.edit=function(){
+    if($scope.view.editing===true){
+      $http.post('http://localhost:3000/events/update/'+$scope.view.event.id+"/"+window.localStorage.getItem('token'), {
+        name:$scope.view.event.name,
+          city:$scope.view.event.city,
+          address:$scope.view.event.address,
+          startDate:$scope.view.event.start.toString(),
+          endDate:$scope.view.event.end.toString(),
+          state:$scope.view.event.state
+      })
+      console.log($scope.view.performer);
+      console.log("doing request now");
+    }
+    $scope.view.editing=!$scope.view.editing
+  }
   $scope.toSearch=function(){
     $state.go('tab.show')
   }
@@ -213,6 +230,7 @@ angular.module('starter.controllers', [])
   $scope.$on('$ionicView.enter',function(){
     console.log('here');
     User.loggedRedirect();
+    $scope.user=User.getCurrUser();
     $scope.view.performer=Data.getSelected('performers')
     Data.updateFollowed().then(function(data){
       console.log(data);
@@ -242,6 +260,18 @@ angular.module('starter.controllers', [])
         $scope.view.following=false;
       }
     })
+  }
+  $scope.edit=function(){
+    if($scope.view.editing===true){
+      $http.post('http://localhost:3000/performers/update/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
+        name:$scope.view.performer.name,
+        bio:$scope.view.performer.bio,
+        state:$scope.view.performer.state
+      })
+      console.log($scope.view.performer);
+      console.log("doing request now");
+    }
+    $scope.view.editing=!$scope.view.editing
   }
   $scope.toSearch=function(){
     $state.go('tab.show')
@@ -319,6 +349,35 @@ angular.module('starter.controllers', [])
       address:$scope.input.address,
       startDate:$scope.input.startDate.toString(),
       endDate:$scope.input.endDate.toString(),
+      state:$scope.input.state}).then(function(res){
+      console.log(res);
+      $state.go('tab.account')
+      //redirect to wherever
+    })
+  }
+})
+.controller('NewPerformerCtrl', function($scope, $state, $http, User){
+  $scope.$on('$ionicView.enter', function(){
+    console.log("sfhaflkjasfhjkasfjlasdf");
+    $scope.input={}
+  })
+  $scope.toAccount=function(){
+    $state.go('tab.account')
+  }
+  $scope.logInput=function(){
+    console.log($scope.input);
+    console.log(typeof $scope.input.endDate);
+    console.log($scope.input.endDate.toString());
+    console.log($scope.input);
+    console.log(typeof $scope.input.endDate);
+  }
+  $scope.submitPerformer=function(){
+    //do post request here,
+
+    $http.post('http://localhost:3000/performers/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
+      username:$scope.input.username,
+      password:$scope.input.password,
+      bio:$scope.input.bio,
       state:$scope.input.state}).then(function(res){
       console.log(res);
       $state.go('tab.account')

@@ -1,26 +1,23 @@
-<!-- display information for a given event, have option to follow and stuff-->
-<ion-view view-title="New Event">
+<ion-view view-title="New Performer">
   <ion-content class="padding">
 
-    <form ng-submit='submitEvent(); eventForm.$setPristine(); form.clear();' name="eventForm">
+    <form ng-submit='submitPerformer(); eventForm.$setPristine(); form.clear();' name="PerformerForm">
       <label class="item-input-wrapper ">
           <input type="text" ng-model="input.name" placeholder="Name" required>
       </label>
+      <label class="item-input-wrapper ">
+          <input type="text" ng-model="input.username" placeholder="Username" required>
+      </label>
+      <label class="item-input-wrapper ">
+          <input type="text" ng-model="input.password" placeholder="Password" required>
+      </label>
+        <div>
+          <label class="item item-input">
+            <span class="input-label">Bio</span>
+            <input ng-model="input.bio" type="textArea" required>
+          </label>
+        </div>
 
-        <div>
-          <h3>Start date:</h3>
-          <label class="item item-input">
-            <span class="input-label">Date</span>
-            <input ng-model="input.startDate" type="date" required>
-          </label>
-        </div>
-        <div>
-            <h3>End date:</h3>
-          <label class="item item-input">
-            <span class="input-label">Date</span>
-            <input ng-model="input.endDate" type="date" required>
-          </label>
-        </div>
         <select ng-model="input.state" required>
         	<option value="AL">Alabama</option>
         	<option value="AK">Alaska</option>
@@ -74,13 +71,8 @@
         	<option value="WI">Wisconsin</option>
         	<option value="WY">Wyoming</option>
         </select>
-        <label class="item-input-wrapper ">
-            <input type="text" ng-model="input.city" placeholder="City" required="">
-        </label>
-        <label class="item-input-wrapper ">
-            <input type="text" ng-model="input.address" placeholder="Address" required="">
-        </label>
-        <input type="submit"value="Create Event">
+
+        <input type="submit"value="Create Performer">
 
     </form>
     <button ng-click="logInput()">Log</button>
