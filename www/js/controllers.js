@@ -136,6 +136,50 @@ angular.module('starter.controllers', [])
     $state.go('tab.performer-show')
   }
 })
+.controller('listCtrl', function($scope, $http, $state, User, Data){
+  $scope.view={
+    editingFilter:false
+  }
+
+  $scope.data={}
+  $scope.view.search={apply:false};
+  $scope.$on('$ionicView.enter',function(){
+    User.loggedRedirect();
+    $scope.getAll();
+    console.log("entered list view");
+  })
+  $scope.getAll=function(){
+    Data.getList().then(function(res){
+      console.log(res);
+      $scope.data=res.data
+    })
+  }
+  $scope.showEvent=function(event){
+    Data.select('events',event)
+    console.log('this');
+    $state.go('tab.event-show')
+  }
+  $scope.showPerformer=function(performer){
+    Data.select('performers',performer)
+    $state.go('tab.performer-show')
+  }
+  $scope.doSearch=function(){
+    console.log('here');
+    console.log($scope.view.search);
+    Data.search($scope.view.search).then(function(out){
+      $scope.data=out;
+    })
+
+    //do the different api requests based on selected option
+  }
+  $scope.toAccount=function(){
+    console.log("switching states");
+    $state.go('tab.account')
+  }
+  $scope.editFilter=function(){
+    $scope.view.editingFilter=!$scope.view.editingFilter
+  }
+})
 .controller('showCtrl', function($scope, $http, $state, User, Data){
   $scope.view={}
   $scope.data={}
@@ -237,6 +281,9 @@ angular.module('starter.controllers', [])
        }
      });
    };
+   $scope.toList=function(){
+     $state.go('list')
+   }
   $scope.toSearch=function(){
     $state.go('tab.show')
   }
@@ -268,6 +315,9 @@ angular.module('starter.controllers', [])
         $scope.view.following=true;
       }
     })
+  }
+  $scope.toList=function(){
+    $state.go('list')
   }
   $scope.unFollow=function(){
     $http.get(`http://localhost:3000/users/unfollowP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
@@ -328,6 +378,9 @@ angular.module('starter.controllers', [])
   }
   $scope.toCreatePerformer=function(){
     $state.go('new-performer')
+  }
+  $scope.toList=function(){
+    $state.go('list')
   }
 })
 .controller('SplashCtrl', function($scope, $state, $http, User) {

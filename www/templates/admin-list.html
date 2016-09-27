@@ -1,0 +1,49 @@
+<!-- display information for a given event, have option to follow and stuff-->
+<ion-view view-title="Display">
+  <ion-content class="padding">
+    <h1>Events</h1>
+    <!-- date filter first i guess, rework later??? -->
+    <ion-checkbox ng-model="view.search.apply">Apply Filter</ion-checkbox>
+    <button ng-click="editFilter()">Change Filter</button>
+    <div ng-show="view.editingFilter">
+      <div>
+        <h3>Starts before:</h3>
+        <label class="item item-input">
+          <span class="input-label">Date</span>
+          <input ng-model="view.search.startsBefore" type="date" required>
+        </label>
+      </div>
+      <div>
+        <h3>Starts after:</h3>
+        <label class="item item-input">
+          <span class="input-label">Date</span>
+          <input ng-model="view.search.startsAfter" type="date" required>
+        </label>
+      </div>
+      <div>
+          <h3>Ends before:</h3>
+        <label class="item item-input">
+          <span class="input-label">Date</span>
+          <input ng-model="view.search.endsBefore" type="date" required>
+        </label>
+      </div>
+      <div>
+        <h3>Ends after:</h3>
+        <label class="item item-input">
+          <span class="input-label">Date</span>
+          <input ng-model="view.search.startAfter" type="date" required>
+        </label>
+      </div>
+    </div>
+    <!--sort stuff...  -->
+    <!--  -->
+      <div ng-repeat="event in data.events | eventFilter: view.search">
+        <h4 ng-click="showEvent(event)">{{event.name}}</h4> <!-- on click, go to display page for the event-->
+      </div>
+    <h1>Performers</h1>
+      <div ng-repeat="performer in data.performers">
+        <h4 ng-click="showPerformer(performer)">{{performer.name}}</h4> <!-- on click, go to display page for the event-->
+      </div>
+      <button ng-click="toAccount()">Back to Account Page</button>
+  </ion-content>
+</ion-view>

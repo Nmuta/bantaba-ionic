@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], function($httpProvider) {
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.filters', 'starter.services'], function($httpProvider) {
   // Use x-www-form-urlencoded Content-Type
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
@@ -102,6 +102,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'], 
         controller: 'followingCtrl'
       }
     }
+  })
+  .state('list', {
+    url: '/list',
+    templateUrl: 'templates/admin-list.html',
+    controller: 'listCtrl'
+
+
   })
   .state('tab.show', {
     url: '/show',

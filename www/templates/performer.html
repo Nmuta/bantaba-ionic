@@ -110,7 +110,9 @@
         {{view.performer.validated}}
       </div>
       <button ng-click="confirmDelete()">Delete</button>
-
+      <button ng-click="toList()">
+        View All Events and Performers
+      </button>
       <button ng-show="!view.editing" ng-click="edit()">Edit</button>
       <button ng-show="view.editing" ng-click="edit()">Save</button>
 

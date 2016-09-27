@@ -62,6 +62,9 @@ angular.module('starter.services', [])
         })
       })
     },
+    getList:function(){
+      return $http.get('http://localhost:3000/search/list/')
+    },
     updateFollowed:function(){
       return $http.get(`http://localhost:3000/users/following/${User.getCurrUser().id}`).then(function(res){
         data.following={ events:res.data.events,

@@ -123,7 +123,9 @@ start<ion-view view-title="Event">
       <button ng-click="toSearch()">Search</button>
       <div ng-show="user.accountType===1">
         <button ng-click="confirmDelete()">Delete</button>
-
+        <button ng-click="toList()">
+          View All Events and Performers
+        </button>
         <button ng-show="!view.editing" ng-click="edit()">Edit</button>
         <button ng-show="view.editing" ng-click="edit()">Save</button>
       </div>
