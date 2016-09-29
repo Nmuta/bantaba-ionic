@@ -214,6 +214,7 @@ angular.module('starter.controllers', [])
 })
 .controller('EventDisplay', function($scope, $http, $ionicPopup, $state, User, Data){
   $scope.view={}
+
   $scope.$on('$ionicView.enter',function(){
     console.log('here');
     User.loggedRedirect();
@@ -226,6 +227,25 @@ angular.module('starter.controllers', [])
           return (event.event_id===$scope.view.event.id);
         }).length>0;
     })
+    if($scope.user.accountType===2){
+      $http.get(`http://localhost:3000/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
+        if(res.data){
+
+          $scope.view.performer=res.data[0];
+          console.log($scope.view.performer);
+          $http.get(`http://localhost:3000/performers/performances/${$scope.view.performer.id}`).then(function(res){
+            console.log(res.data);
+
+            $scope.view.performing=(res.data.filter(function(event){
+              return event.id===$scope.view.event.id
+            }).length>0)
+
+
+          })
+
+        }
+      })
+    }
     $scope.view.event.start=new Date($scope.view.event.start);
     $scope.view.event.end=new Date($scope.view.event.end);
     Data.getEventsPerformers($scope.view.event).then(function(performers){
@@ -250,7 +270,20 @@ angular.module('starter.controllers', [])
       }
     })
   }
-
+  $scope.addPerformance=function(){
+    $http.get(`http://localhost:3000/users/addPerformance/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+      if(res.data){
+        $scope.view.performing=true;
+      }
+    })
+  }
+  $scope.removePerformance=function(){
+    $http.get(`http://localhost:3000/users/removePerformance/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+      if(res.data){
+        $scope.view.performing=false;
+      }
+    })
+  }
   $scope.edit=function(){
     if($scope.view.editing===true){
       $http.post('http://localhost:3000/events/update/'+$scope.view.event.id+"/"+window.localStorage.getItem('token'), {
@@ -358,7 +391,7 @@ angular.module('starter.controllers', [])
     $state.go('tab.show')
   }
 })
-.controller('AccountCtrl', function($scope, $state, $http, User) {
+.controller('AccountCtrl', function($scope, $state, $http, Data, User) {
   $scope.settings = {
     enableFriends: true
   };
@@ -369,9 +402,26 @@ angular.module('starter.controllers', [])
     User.loggedRedirect();
   }
   $scope.view={}
+  $scope.view.performer={}
+  $scope.view.events={}
   $scope.$on('$ionicView.enter', function(){
     $scope.user=User.getCurrUser();
+    if($scope.user.accountType===2){
+      $http.get(`http://localhost:3000/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
+        if(res.data){
+
+          $scope.view.performer=res.data[0];
+          console.log($scope.view.performer);
+          $http.get(`http://localhost:3000/performers/performances/${$scope.view.performer.id}`).then(function(res){
+            console.log(res);
+            $scope.view.events=res.data
+          })
+
+        }
+      })
+    }
     $scope.view.createEvent=false;
+
   })
   $scope.toCreateEvent=function(){
     $state.go('new-event')
@@ -379,8 +429,29 @@ angular.module('starter.controllers', [])
   $scope.toCreatePerformer=function(){
     $state.go('new-performer')
   }
+  $scope.edit=function(){
+    if($scope.view.editing===true){
+      $http.post('http://localhost:3000/performers/update/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
+        name:$scope.view.performer.name,
+        bio:$scope.view.performer.bio,
+        state:$scope.view.performer.state
+      })
+      console.log($scope.view.performer);
+      console.log("doing request now");
+    }
+    $scope.view.editing=!$scope.view.editing
+  }
   $scope.toList=function(){
     $state.go('list')
+  }
+  $scope.showEvent=function(event){
+    Data.select('events',event)
+    console.log('this');
+    $state.go('tab.event-show')
+  }
+  $scope.showPerformer=function(performer){
+    Data.select('performers',performer)
+    $state.go('tab.performer-show')
   }
 })
 .controller('SplashCtrl', function($scope, $state, $http, User) {

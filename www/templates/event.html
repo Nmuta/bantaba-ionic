@@ -119,8 +119,15 @@ start<ion-view view-title="Event">
       <button ng-show="view.following" ng-click="unFollow()" class="button button-calm">
         Unfollow This Event
       </button>
-
       <button ng-click="toSearch()">Search</button>
+      <div ng-show="user.accountType===2">
+        <button ng-show="!view.performing" ng-click="addPerformance()" class="button button-calm">
+          Add Performance
+        </button>
+        <button ng-show="view.performing" ng-click="removePerformance()" class="button button-calm">
+          Remove Performance
+        </button>
+      </div>
       <div ng-show="user.accountType===1">
         <button ng-click="confirmDelete()">Delete</button>
         <button ng-click="toList()">
