@@ -23,7 +23,7 @@
         View All Events and Performers
       </button>
     </div>
-    <div ng-show="user.accountType===2">
+    <div ng-show="user.accountType===3">
       <!--create profile page  -->
       <div ng-show="!view.editing">
         <div>
@@ -35,6 +35,8 @@
         <div>
         State: {{view.performer.state}}
         </div>
+      </div>
+      <div>
       </div>
       <div  ng-show="view.editing">
             <div>
@@ -109,6 +111,8 @@
             </label>
           </div>
         </div>
+        Followers: {{view.performer.follower_count}}
+
         <div>
           {{view.performer.validated}}
         </div>

@@ -1,10 +1,13 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ionic.cloud'])
 
-.controller('DashCtrl', function($scope, $state,Data, $http, User) {
-
+.controller('DashCtrl', function($scope, $ionicPush, $state,Data, $http, User) {
+  $ionicPush.register().then(function(t) {
+    return $ionicPush.saveToken(t);
+  }).then(function(t) {
+    console.log('Token saved:', t.token);
+  });
   $scope.view={}
   $scope.data="this is a test"
-
   $scope.$on('$ionicView.enter',function(){
     console.log("entered dash view");
     User.loggedRedirect();
@@ -13,7 +16,12 @@ angular.module('starter.controllers', [])
       console.log(res);
         $scope.view.events=res.data;
     })
+
   })
+  $scope.$on('cloud:push:notification', function(event, data) {
+    var msg = data.message;
+    alert(msg.title + ': ' + msg.text);
+  });
   $scope.testLogin=function(){
     console.log($scope.view.user);
     $http.post('http://localhost:3000/auth/getUser', {token:window.localStorage.getItem('token')}).then(function(res){
@@ -38,8 +46,6 @@ angular.module('starter.controllers', [])
     $state.go('tab.event-show')
   }
 })
-
-
 .controller('loginCtrl', function($scope, $stateParams, $http, User, $location, $state){
   console.log("stuff");
 
@@ -57,6 +63,7 @@ angular.module('starter.controllers', [])
       username:$scope.view.username,
       password:$scope.view.password,
     }).then(function(res){
+
       if(res.data.error===true){
         console.log(res.data);
       $scope.view.errormessage=res.data.message;
@@ -65,6 +72,8 @@ angular.module('starter.controllers', [])
         console.log(res.data);
         window.localStorage.setItem("token", res.data.token);
         User.login(res.data)
+        $scope.view={}
+
         $state.go('tab.dash')
       }
     })
@@ -89,7 +98,7 @@ angular.module('starter.controllers', [])
       username:$scope.view.username,
       password:$scope.view.password,
       accountType:$scope.view.accountType,
-
+      state:$scope.view.state
     }).then(function(res){
       window.localStorage.setItem("token", res.data.token);
       User.login(res.data)
@@ -209,7 +218,11 @@ angular.module('starter.controllers', [])
     Data.search($scope.view.search).then(function(out){
       $scope.data=out;
     })
+
     //do the different api requests based on selected option
+  }
+  $scope.toList=function(){
+    $state.go('list')
   }
 })
 .controller('EventDisplay', function($scope, $http, $ionicPopup, $state, User, Data){
@@ -227,7 +240,7 @@ angular.module('starter.controllers', [])
           return (event.event_id===$scope.view.event.id);
         }).length>0;
     })
-    if($scope.user.accountType===2){
+    if($scope.user.accountType===3){
       $http.get(`http://localhost:3000/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
         if(res.data){
 
@@ -406,10 +419,10 @@ angular.module('starter.controllers', [])
   $scope.view.events={}
   $scope.$on('$ionicView.enter', function(){
     $scope.user=User.getCurrUser();
-    if($scope.user.accountType===2){
+    if($scope.user.accountType===3){
       $http.get(`http://localhost:3000/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
         if(res.data){
-
+          console.log(res.data);
           $scope.view.performer=res.data[0];
           console.log($scope.view.performer);
           $http.get(`http://localhost:3000/performers/performances/${$scope.view.performer.id}`).then(function(res){
