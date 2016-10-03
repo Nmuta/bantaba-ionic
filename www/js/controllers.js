@@ -467,7 +467,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $state.go('tab.performer-show')
   }
 })
-.controller('SplashCtrl', function($scope, $state, $http, User) {
+.controller('SplashCtrl', function($scope, $state,$ionicPush, $http, User) {
   $scope.settings = {
     enableFriends: true
   };
@@ -485,6 +485,11 @@ angular.module('starter.controllers', ['ionic.cloud'])
         }
       })
     }
+    $ionicPush.register().then(function(t) {
+      return $ionicPush.saveToken(t);
+    }).then(function(t) {
+      console.log('Token saved:', t.token);
+    });
   })
   $scope.logout=function(){
     User.logout();

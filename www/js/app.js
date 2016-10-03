@@ -72,7 +72,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ionic.cloud', 'starte
 
   $ionicCloudProvider.init({
     "core": {
-      "app_id": "com.ionicframework.bantaba"
+      "app_id": "b889c882"
     },
     "push": {
       "sender_id": "108358700292",
