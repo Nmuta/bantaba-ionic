@@ -44,17 +44,22 @@ angular.module('starter.services', [])
     events:null,
     performers:null
   }
+  var urls={
+    hosted:'https://bantaba.herokuapp.com',
+    local:'http://localhost:3000'
+  }
+  var enviroment= 'hosted'
   return {
     update:function(){
-      return $http.get('http://localhost:3000/events/').then(function(res){
-        return $http.get('http://localhost:3000/performers/').then(function(res2){
+      return $http.get(urls[enviroment]+'/events/').then(function(res){
+        return $http.get(urls[enviroment]+'/performers/').then(function(res2){
           res.data.forEach(function(event){
             data.events[event.id]=event;
           })
           res2.data.forEach(function(performer){
             data.performers[performer.id]=performer;
           })
-          return $http.get(`http://localhost:3000/users/following/${User.getCurrUser().id}`).then(function(res){
+          return $http.get(`${urls[enviroment]}/users/following/${User.getCurrUser().id}`).then(function(res){
             data.following={ events:res.data.events,
               performers:res.data.performers
             }
@@ -63,10 +68,13 @@ angular.module('starter.services', [])
       })
     },
     getList:function(){
-      return $http.get('http://localhost:3000/search/list/')
+      return $http.get(urls[enviroment]+'/search/list/')
+    },
+    url:function(){
+      return urls[enviroment]
     },
     updateFollowed:function(){
-      return $http.get(`http://localhost:3000/users/following/${User.getCurrUser().id}`).then(function(res){
+      return $http.get(`${urls[enviroment]}/users/following/${User.getCurrUser().id}`).then(function(res){
         data.following={ events:res.data.events,
           performers:res.data.performers
         }
@@ -82,7 +90,7 @@ angular.module('starter.services', [])
       return data.following
     },
     getInState:function(){
-      return $http.get('http://localhost:3000/events/state/'+User.getCurrUser().state)
+      return $http.get(urls[enviroment]+'/events/state/'+User.getCurrUser().state)
     },
     getData:function(){
       return data
@@ -94,7 +102,7 @@ angular.module('starter.services', [])
       return selected[type]
     },
     getEventsPerformers:function(event){
-      return $http.get(`http://localhost:3000/events/performers/${event.id}`).then(function(res){
+      return $http.get(urls[enviroment]+`/events/performers/${event.id}`).then(function(res){
         var performers={}
         res.data.forEach(function(performer){
           performers[performer.id]=performer;
@@ -105,8 +113,8 @@ angular.module('starter.services', [])
     search:function(search){
       console.log("in search");
       //if its a city, you'll have to try to parse that somehow.... (this will become more of issue as you go...)
-      console.log(`http://localhost:3000/search/${search.type}/${search.text}`);
-      return $http.get(`http://localhost:3000/search/${search.type}/${search.text}`).then(function(res){
+      console.log(urls[enviroment]+`/search/${search.type}/${search.text}`);
+      return $http.get(`${urls[enviroment]}/search/${search.type}/${search.text}`).then(function(res){
         console.log(res);
         var out={
           events:{},

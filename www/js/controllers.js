@@ -24,7 +24,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   });
   $scope.testLogin=function(){
     console.log($scope.view.user);
-    $http.post('http://localhost:3000/auth/getUser', {token:window.localStorage.getItem('token')}).then(function(res){
+    $http.post(Data.url()+'/auth/getUser', {token:window.localStorage.getItem('token')}).then(function(res){
       console.log(res.data);
       // if(res.data.error!=true){
       //   console.log(res.data);
@@ -46,7 +46,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $state.go('tab.event-show')
   }
 })
-.controller('loginCtrl', function($scope, $stateParams, $http, User, $location, $state){
+.controller('loginCtrl', function($scope, $stateParams, $ionicAuth,$ionicPush, $http, User, Data, $location, $state){
   console.log("stuff");
 
   $scope.view={}
@@ -59,7 +59,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     console.log($scope);
     console.log($scope.view.username);
     console.log($scope.view.password);
-    $http.post('http://localhost:3000/auth/login', {
+    $http.post(Data.url()+'/auth/login', {
       username:$scope.view.username,
       password:$scope.view.password,
     }).then(function(res){
@@ -70,17 +70,30 @@ angular.module('starter.controllers', ['ionic.cloud'])
       }
       else{
         console.log(res.data);
-        window.localStorage.setItem("token", res.data.token);
-        User.login(res.data)
-        $scope.view={}
+        var loginData = {'username': $scope.view.username, 'password': $scope.view.password};
+        var loginOptions = {'inAppBrowserOptions': {'hidden': true}};
+        console.log("here, in this spot specifically  ");
+        $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
+          console.log("this stuff");
+          console.log(res2);
+          window.localStorage.setItem("token", res.data.token);
+          User.login(res.data)
+          $scope.view={}
+          $ionicPush.register().then(function(t) {
+            return $ionicPush.saveToken(t);
+          }).then(function(t) {
+            console.log('Token saved:', t.token);
+          });
+          $state.go('tab.dash')
+        });
 
-        $state.go('tab.dash')
       }
     })
   }
 
 })
-.controller('registerCtrl', function($scope,$state,  $stateParams, $http, User){
+.controller('registerCtrl', function($scope,$state, $ionicAuth, $stateParams, $http, User){
+
   console.log("stuff");
 
   $scope.view={}
@@ -94,15 +107,30 @@ angular.module('starter.controllers', ['ionic.cloud'])
     console.log($scope.view.username);
     console.log($scope.view.password);
     console.log($scope.view.accountType);
-    $http.post('http://localhost:3000/auth/signup', {
+    $http.post(Data.url()+'/auth/signup', {
       username:$scope.view.username,
       password:$scope.view.password,
       accountType:$scope.view.accountType,
       state:$scope.view.state
     }).then(function(res){
-      window.localStorage.setItem("token", res.data.token);
-      User.login(res.data)
-      $state.go('tab.following')
+      console.log(res.data);
+      var loginData = {'username': $scope.view.username, 'password': $scope.view.password};
+      var loginOptions = {'inAppBrowserOptions': {'hidden': true}};
+      console.log("here, in this spot specifically  ");
+      $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
+        console.log("this stuff");
+        console.log(res2);
+        window.localStorage.setItem("token", res.data.token);
+        User.login(res.data)
+        $scope.view={}
+        $ionicPush.register().then(function(t) {
+          return $ionicPush.saveToken(t);
+        }).then(function(t) {
+          console.log('Token saved:', t.token);
+        });
+        $state.go('tab.dash')
+      });
+
     })
   }
   $scope.log=function(){
@@ -241,12 +269,12 @@ angular.module('starter.controllers', ['ionic.cloud'])
         }).length>0;
     })
     if($scope.user.accountType===3){
-      $http.get(`http://localhost:3000/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
+      $http.get(`${Data.url()}/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
         if(res.data){
 
           $scope.view.performer=res.data[0];
           console.log($scope.view.performer);
-          $http.get(`http://localhost:3000/performers/performances/${$scope.view.performer.id}`).then(function(res){
+          $http.get(`${Data.url()}/performers/performances/${$scope.view.performer.id}`).then(function(res){
             console.log(res.data);
 
             $scope.view.performing=(res.data.filter(function(event){
@@ -268,7 +296,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     });
   })
   $scope.follow=function(){
-    $http.get(`http://localhost:3000/users/followE/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+    $http.get(`${Data.url()}/users/followE/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
       if(res.data){
         Data.setFollowed(res.data);
         $scope.view.following=true;
@@ -276,7 +304,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     })
   }
   $scope.unFollow=function(){
-    $http.get(`http://localhost:3000/users/unfollowE/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+    $http.get(`${Data.url()}/users/unfollowE/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
       if(res.data){
         Data.setFollowed(res.data);
         $scope.view.following=false;
@@ -284,14 +312,14 @@ angular.module('starter.controllers', ['ionic.cloud'])
     })
   }
   $scope.addPerformance=function(){
-    $http.get(`http://localhost:3000/users/addPerformance/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+    $http.get(`${Data.url()}/users/addPerformance/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
       if(res.data){
         $scope.view.performing=true;
       }
     })
   }
   $scope.removePerformance=function(){
-    $http.get(`http://localhost:3000/users/removePerformance/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
+    $http.get(`${Data.url()}/users/removePerformance/${window.localStorage.getItem('token')}/${$scope.view.event.id}`).then(function(res){
       if(res.data){
         $scope.view.performing=false;
       }
@@ -299,7 +327,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
   $scope.edit=function(){
     if($scope.view.editing===true){
-      $http.post('http://localhost:3000/events/update/'+$scope.view.event.id+"/"+window.localStorage.getItem('token'), {
+      $http.post(Data.url()+'/events/update/'+$scope.view.event.id+"/"+window.localStorage.getItem('token'), {
         name:$scope.view.event.name,
           city:$scope.view.event.city,
           address:$scope.view.event.address,
@@ -320,7 +348,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
      confirmPopup.then(function(res) {
        if(res) {
-         $http.get('http://localhost:3000'+'/events/delete/'+$scope.view.event.id+"/"+window.localStorage.getItem('token')).then(function(res){
+         $http.get(Data.url()+'/events/delete/'+$scope.view.event.id+"/"+window.localStorage.getItem('token')).then(function(res){
            $state.go('tab.show')
 
          })
@@ -355,7 +383,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   })
   $scope.follow=function(){
-    $http.get(`http://localhost:3000/users/followP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
+    $http.get(`${Data.url()}/users/followP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
       if(res.data){
         Data.setFollowed(res.data);
         $scope.view.following=true;
@@ -366,7 +394,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $state.go('list')
   }
   $scope.unFollow=function(){
-    $http.get(`http://localhost:3000/users/unfollowP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
+    $http.get(Data.url()+`/users/unfollowP/${window.localStorage.getItem('token')}/${$scope.view.performer.id}`).then(function(res){
       if(res.data){
         Data.setFollowed(res.data);
         $scope.view.following=false;
@@ -375,7 +403,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
   $scope.edit=function(){
     if($scope.view.editing===true){
-      $http.post('http://localhost:3000/performers/update/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
+      $http.post(Data.url()+'/performers/update/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
         name:$scope.view.performer.name,
         bio:$scope.view.performer.bio,
         state:$scope.view.performer.state
@@ -393,7 +421,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
      confirmPopup.then(function(res) {
        if(res) {
-         $http.get('http://localhost:3000'+'/performers/delete/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token')).then(function(res){
+         $http.get(Data.url()+'/performers/delete/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token')).then(function(res){
            $state.go('tab.show')
 
          })
@@ -417,15 +445,16 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.view={}
   $scope.view.performer={}
   $scope.view.events={}
+  $scope.notification={}
   $scope.$on('$ionicView.enter', function(){
     $scope.user=User.getCurrUser();
     if($scope.user.accountType===3){
-      $http.get(`http://localhost:3000/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
+      $http.get(`${Data.url()}/users/profile/${window.localStorage.getItem('token')}`).then(function(res){
         if(res.data){
           console.log(res.data);
           $scope.view.performer=res.data[0];
           console.log($scope.view.performer);
-          $http.get(`http://localhost:3000/performers/performances/${$scope.view.performer.id}`).then(function(res){
+          $http.get(`${Data.url()}/performers/performances/${$scope.view.performer.id}`).then(function(res){
             console.log(res);
             $scope.view.events=res.data
           })
@@ -442,9 +471,19 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.toCreatePerformer=function(){
     $state.go('new-performer')
   }
+  $scope.submitNotification=function(){
+    if($scope.notification.text){
+      $http.post(Data.url()+'/performers/notify/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
+        text:$scope.notification.text
+      }).then(function(){
+        console.log('whatever');
+        $scope.notification={};
+      })
+    }
+  }
   $scope.edit=function(){
     if($scope.view.editing===true){
-      $http.post('http://localhost:3000/performers/update/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
+      $http.post(Data.url()+'/performers/update/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
         name:$scope.view.performer.name,
         bio:$scope.view.performer.bio,
         state:$scope.view.performer.state
@@ -467,7 +506,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $state.go('tab.performer-show')
   }
 })
-.controller('SplashCtrl', function($scope, $state,$ionicPush, $http, User) {
+.controller('SplashCtrl', function($scope, $state, Data, $ionicPush, $http, User) {
   $scope.settings = {
     enableFriends: true
   };
@@ -476,7 +515,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     var token=window.localStorage.getItem("token");
     console.log(token);
     if(token){
-      $http.post('http://localhost:3000/auth/getUser', {token:token}).then(function(res){
+      $http.post(Data.url()+'/auth/getUser', {token:token}).then(function(res){
         console.log("this");
         if(res.data.error!=true){
           console.log(res.data);
@@ -499,7 +538,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   }
 })
-.controller('NewEventCtrl', function($scope, $state, $http, User){
+.controller('NewEventCtrl', function($scope, Data, $state, $http, User){
   $scope.$on('$ionicView.enter', function(){
     console.log("sfhaflkjasfhjkasfjlasdf");
     $scope.input={}
@@ -517,7 +556,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.submitEvent=function(){
     //do post request here,
 
-    $http.post('http://localhost:3000/events/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
+    $http.post(Data.url()+'/events/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
       city:$scope.input.city,
       address:$scope.input.address,
       startDate:$scope.input.startDate.toString(),
@@ -529,7 +568,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     })
   }
 })
-.controller('NewPerformerCtrl', function($scope, $state, $http, User){
+.controller('NewPerformerCtrl', function($scope, Data, $state, $http, User){
   $scope.$on('$ionicView.enter', function(){
     console.log("sfhaflkjasfhjkasfjlasdf");
     $scope.input={}
@@ -547,7 +586,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.submitPerformer=function(){
     //do post request here,
 
-    $http.post('http://localhost:3000/performers/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
+    $http.post(Data.url()+'/performers/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
       username:$scope.input.username,
       password:$scope.input.password,
       bio:$scope.input.bio,
