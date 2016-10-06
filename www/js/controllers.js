@@ -76,16 +76,17 @@ angular.module('starter.controllers', ['ionic.cloud'])
         $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
           console.log("this stuff");
           console.log(res2);
-          window.localStorage.setItem("token", res.data.token);
-          User.login(res.data)
-          $scope.view={}
+
           $ionicPush.register().then(function(t) {
             return $ionicPush.saveToken(t);
           }).then(function(t) {
             console.log('Token saved:', t.token);
           });
-          $state.go('tab.dash')
         });
+        window.localStorage.setItem("token", res.data.token);
+        User.login(res.data)
+        $scope.view={}
+        $state.go('tab.dash')
 
       }
     })
@@ -369,6 +370,10 @@ angular.module('starter.controllers', ['ionic.cloud'])
     User.loggedRedirect();
     $scope.user=User.getCurrUser();
     $scope.view.performer=Data.getSelected('performers')
+    $http.get(`${Data.url()}/performers/notifications/${$scope.view.performer.id}`).then(function(res){
+     console.log(res);
+     $scope.view.notifications=res.data;
+    })
     Data.updateFollowed().then(function(data){
       console.log(data);
         $scope.view.following=false
@@ -473,8 +478,10 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
   $scope.submitNotification=function(){
     if($scope.notification.text){
+      console.log($scope.notification);
       $http.post(Data.url()+'/performers/notify/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
-        text:$scope.notification.text
+        text:$scope.notification.text,
+        date:$scope.notification.date.toString()
       }).then(function(){
         console.log('whatever');
         $scope.notification={};

@@ -124,6 +124,14 @@
           <input type="text" ng-model="notification.text"/>
 
         </label>
+        <div>
+          <h3>Send notification on:</h3>
+          <label class="item item-input">
+            <span class="input-label">Date</span>
+            <input ng-model="notification.date" type="date" required>
+            <!--make this take dates later than now if possible... time too?  -->
+          </label>
+        </div>
         <button  ng-click="submitNotification()">Notify</button>
 
         <!--put option for date here later...  -->

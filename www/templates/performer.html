@@ -102,6 +102,11 @@
         {{performer.name}}
       </a>
     </div> -->
+    <div>
+      <p ng-repeat="notification in view.notifications">
+        {{notification.text}}
+      </p>
+    </div>
     <button ng-click="toSearch()">Search</button>
 
     <div ng-show="user.accountType===1">
