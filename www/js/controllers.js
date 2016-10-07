@@ -7,32 +7,22 @@ angular.module('starter.controllers', ['ionic.cloud'])
     console.log('Token saved:', t.token);
   });
   $scope.view={}
-  $scope.data="this is a test"
   $scope.$on('$ionicView.enter',function(){
     console.log("entered dash view");
     User.loggedRedirect();
     $scope.view.user=User.getCurrUser()
     Data.getInState().then(function(res){
       console.log(res);
-        $scope.view.events=res.data;
+      $scope.view.events=res.data;
     })
 
   })
   $scope.$on('cloud:push:notification', function(event, data) {
     var msg = data.message;
     alert(msg.title + ': ' + msg.text);
-  });
-  $scope.testLogin=function(){
-    console.log($scope.view.user);
-    $http.post(Data.url()+'/auth/getUser', {token:window.localStorage.getItem('token')}).then(function(res){
-      console.log(res.data);
-      // if(res.data.error!=true){
-      //   console.log(res.data);
-      //   User.login(res.data)
-      //   $location.path('/tab/dash');
-      // }
-    })
-  }
+  }); //you should probably rework this in some way, either have it always pop up on all the view, or just a little notification tab or something
+        //I like the notification tab thing... - show unread ones for each performer you're following..... little number next to them or whatever
+
   $scope.logout=function(){
     User.logout();
     User.loggedRedirect();
@@ -55,10 +45,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
     console.log("get ready for login");
   })
   $scope.login=function(){
-    console.log("gonna login");
-    console.log($scope);
-    console.log($scope.view.username);
-    console.log($scope.view.password);
     $http.post(Data.url()+'/auth/login', {
       username:$scope.view.username,
       password:$scope.view.password,
@@ -147,26 +133,18 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   $scope.$on('$ionicView.enter',function(){
     User.loggedRedirect();
-    console.log("hideKeyboardAccessoryBar");
     $scope.user=User.getCurrUser()
     $scope.update();
   })
   $scope.update=function(){
     console.log("doing request");
-    if($scope.user.loggedin===true){
-      Data.updateFollowed().then(function(following){
-        $scope.following=following;
-        console.log($scope.following);
-      })
-    }
-    else{
-      $scope.following={};
-      console.log('not logged in');
-    }
+    Data.updateFollowed().then(function(following){
+      $scope.following=following;
+      console.log($scope.following);
+    })
   }
   $scope.showEvent=function(event){
     Data.select('events',event)
-    console.log('this');
     $state.go('tab.event-show')
   }
   $scope.showPerformer=function(performer){
@@ -188,13 +166,11 @@ angular.module('starter.controllers', ['ionic.cloud'])
   })
   $scope.getAll=function(){
     Data.getList().then(function(res){
-      console.log(res);
       $scope.data=res.data
     })
   }
   $scope.showEvent=function(event){
     Data.select('events',event)
-    console.log('this');
     $state.go('tab.event-show')
   }
   $scope.showPerformer=function(performer){
@@ -207,8 +183,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
     Data.search($scope.view.search).then(function(out){
       $scope.data=out;
     })
-
-    //do the different api requests based on selected option
   }
   $scope.toAccount=function(){
     console.log("switching states");
@@ -420,7 +394,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
   $scope.confirmDelete = function() {
      var confirmPopup = $ionicPopup.confirm({
-       title: 'Delete Person',
+       title: 'Delete Event',
        template: 'Are you sure you want to delete this event?'
      });
 
@@ -443,7 +417,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
   };
   $scope.logout=function(){
     User.logout();
-    User.loggedRedirect();
     window.localStorage.removeItem("token");
     User.loggedRedirect();
   }
@@ -479,10 +452,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.submitNotification=function(){
     if($scope.notification.text){
       console.log($scope.notification);
-      $http.post(Data.url()+'/performers/notify/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), {
-        text:$scope.notification.text,
-        date:$scope.notification.date.toString()
-      }).then(function(){
+      $http.post(Data.url()+'/performers/notify/'+$scope.view.performer.id+"/"+window.localStorage.getItem('token'), $scope.notification).then(function(){
         console.log('whatever');
         $scope.notification={};
       })
@@ -537,13 +507,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
       console.log('Token saved:', t.token);
     });
   })
-  $scope.logout=function(){
-    User.logout();
-    User.loggedRedirect();
-    window.localStorage.removeItem("token");
-    User.loggedRedirect();
-
-  }
 })
 .controller('NewEventCtrl', function($scope, Data, $state, $http, User){
   $scope.$on('$ionicView.enter', function(){
@@ -553,16 +516,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.toAccount=function(){
     $state.go('tab.account')
   }
-  $scope.logInput=function(){
-    console.log($scope.input);
-    console.log(typeof $scope.input.endDate);
-    console.log($scope.input.endDate.toString());
-    console.log($scope.input);
-    console.log(typeof $scope.input.endDate);
-  }
   $scope.submitEvent=function(){
-    //do post request here,
-
     $http.post(Data.url()+'/events/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
       city:$scope.input.city,
       address:$scope.input.address,
@@ -571,28 +525,17 @@ angular.module('starter.controllers', ['ionic.cloud'])
       state:$scope.input.state}).then(function(res){
       console.log(res);
       $state.go('tab.account')
-      //redirect to wherever
     })
   }
 })
 .controller('NewPerformerCtrl', function($scope, Data, $state, $http, User){
   $scope.$on('$ionicView.enter', function(){
-    console.log("sfhaflkjasfhjkasfjlasdf");
     $scope.input={}
   })
   $scope.toAccount=function(){
     $state.go('tab.account')
   }
-  $scope.logInput=function(){
-    console.log($scope.input);
-    console.log(typeof $scope.input.endDate);
-    console.log($scope.input.endDate.toString());
-    console.log($scope.input);
-    console.log(typeof $scope.input.endDate);
-  }
   $scope.submitPerformer=function(){
-    //do post request here,
-
     $http.post(Data.url()+'/performers/create', {token:window.localStorage.getItem('token'),   name:$scope.input.name,
       username:$scope.input.username,
       password:$scope.input.password,
@@ -600,7 +543,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
       state:$scope.input.state}).then(function(res){
       console.log(res);
       $state.go('tab.account')
-      //redirect to wherever
     })
   }
 })
