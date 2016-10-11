@@ -133,6 +133,10 @@
           </label>
         </div>
         <button  ng-click="submitNotification()">Notify</button>
+        <button ng-click="showNotifications()">Show and Edit Past Notifications</button>
+        <div ng-show="view.showNoti" ng-repeat="note in view.notifications">
+          {{note.text}}
+        </div>
 
         <!--put option for date here later...  -->
       <div>
