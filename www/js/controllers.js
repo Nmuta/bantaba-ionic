@@ -36,6 +36,98 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $state.go('tab.event-show')
   }
 })
+.controller('loginCtrl', function($scope, $stateParams, $ionicAuth,$ionicPush, $http, User, Data, $location, $state){
+  console.log("stuff");
+
+  $scope.view={}
+  $scope.$on('$ionicView.enter',function(){
+    $scope.view={}
+    console.log("get ready for login");
+  })
+  $scope.login=function(){
+    $http.post(Data.url()+'/auth/login', {
+      username:$scope.view.username,
+      password:$scope.view.password,
+    }).then(function(res){
+
+      if(res.data.error===true){
+        console.log(res.data);
+      $scope.view.errormessage=res.data.message;
+      }
+      else{
+        console.log(res.data);
+        var loginData = {'username': $scope.view.username, 'password': $scope.view.password};
+        var loginOptions = {'inAppBrowserOptions': {'hidden': true}};
+        console.log("here, in this spot specifically  ");
+        $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
+          console.log("this stuff");
+          console.log(res2);
+
+          $ionicPush.register().then(function(t) {
+            return $ionicPush.saveToken(t);
+          }).then(function(t) {
+            console.log('Token saved:', t.token);
+          });
+        });
+        window.localStorage.setItem("token", res.data.token);
+        User.login(res.data)
+        $scope.view={}
+        $state.go('tab.dash')
+
+      }
+    })
+  }
+
+})
+.controller('registerCtrl', function($scope,$state, Data, $ionicPush, $ionicAuth, $stateParams, $http, User){
+
+  console.log("stuff");
+
+  $scope.view={}
+  $scope.$on('$ionicView.enter',function(){
+    console.log("get ready for login");
+
+  })
+  $scope.signup=function(){
+    console.log("gonna signup");
+    console.log($scope);
+    console.log($scope.view.username);
+    console.log($scope.view.password);
+    console.log($scope.view.accountType);
+    $http.post(Data.url()+'/auth/signup', {
+      username:$scope.view.username,
+      password:$scope.view.password,
+      accountType:$scope.view.accountType,
+      state:$scope.view.state
+    }).then(function(res){
+      console.log(res.data);
+      var loginData = {'username': $scope.view.username, 'password': $scope.view.password};
+      var loginOptions = {'inAppBrowserOptions': {'hidden': true}};
+      console.log("here, in this spot specifically  ");
+      $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
+        console.log("this stuff");
+        console.log(res2);
+        window.localStorage.setItem("token", res.data.token);
+        User.login(res.data)
+        $scope.view={}
+        $ionicPush.register().then(function(t) {
+          return $ionicPush.saveToken(t);
+        }).then(function(t) {
+          console.log('Token saved:', t.token);
+        });
+        $state.go('tab.dash')
+      });
+
+    })
+  }
+  $scope.log=function(){
+    console.log("gonna signup");
+    console.log($scope);
+    console.log($scope.view.username);
+    console.log($scope.view.password);
+    console.log($scope.view.accountType);
+  }
+})
 .controller('followingCtrl', function($scope, $state, $http,Data,User){
   $scope.following={}
 
@@ -404,15 +496,12 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
   //show notifications, allow to edit and delete, re-order maybe... --gets clutttered really damn fast ya know
 })
-.controller('SplashCtrl', function($scope, $state, $ionicAuth, Data, $ionicPush, $http, User) {
+.controller('SplashCtrl', function($scope, $state, Data, $ionicPush, $http, User) {
   $scope.settings = {
     enableFriends: true
   };
-  $scope.view={}
   $scope.$on('$ionicView.enter',function(){
     console.log("here");
-    $scope.view.login=false;
-    $scope.view.register=false;
     var token=window.localStorage.getItem("token");
     console.log(token);
     if(token){
@@ -431,85 +520,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
       console.log('Token saved:', t.token);
     });
   })
-  $scope.showLogin=function(){
-    $scope.view.login=!$scope.view.login;
-    $scope.view.register=false;
-  }
-  $scope.showRegister=function(){
-    $scope.view.register=!$scope.view.register;
-    $scope.view.login=false;
-  }
-  $scope.login=function(){
-    $http.post(Data.url()+'/auth/login', {
-      username:$scope.view.username,
-      password:$scope.view.password,
-    }).then(function(res){
-
-      if(res.data.error===true){
-        console.log(res.data);
-      $scope.view.errormessage=res.data.message;
-      }
-      else{
-        console.log(res.data);
-        var loginData = {'username': $scope.view.username, 'password': $scope.view.password};
-        var loginOptions = {'inAppBrowserOptions': {'hidden': true}};
-        console.log("here, in this spot specifically  ");
-        $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
-          console.log("this stuff");
-          console.log(res2);
-
-          $ionicPush.register().then(function(t) {
-            return $ionicPush.saveToken(t);
-          }).then(function(t) {
-            console.log('Token saved:', t.token);
-          });
-        });
-        window.localStorage.setItem("token", res.data.token);
-        User.login(res.data)
-        $scope.view={}
-        $state.go('tab.dash')
-
-      }
-    })
-  }
-  $scope.signup=function(){
-    console.log("gonna signup");
-    console.log($scope);
-    console.log($scope.view.username);
-    console.log($scope.view.password);
-    console.log($scope.view.accountType);
-    $http.post(Data.url()+'/auth/signup', {
-      username:$scope.view.username,
-      password:$scope.view.password,
-      accountType:$scope.view.accountType,
-      state:$scope.view.state
-    }).then(function(res){
-      console.log(res.data);
-      if(res.data.error){
-        $scope.view.errormessage=res.data.message
-      }
-      else{
-        var loginData = {'username': $scope.view.username, 'password': $scope.view.password};
-        var loginOptions = {'inAppBrowserOptions': {'hidden': true}};
-        console.log("here, in this spot specifically  ");
-        $ionicAuth.login('custom', loginData, loginOptions).then(function(res2){
-          console.log("this stuff");
-          console.log(res2);
-          window.localStorage.setItem("token", res.data.token);
-          User.login(res.data)
-          $scope.view={}
-          $ionicPush.register().then(function(t) {
-            return $ionicPush.saveToken(t);
-          }).then(function(t) {
-            console.log('Token saved:', t.token);
-          });
-          $state.go('tab.dash')
-        });
-      }
-
-
-    })
-  }
 })
 .controller('NewEventCtrl', function($scope, Data, $state, $http, User){
   $scope.$on('$ionicView.enter', function(){

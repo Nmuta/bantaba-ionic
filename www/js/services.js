@@ -112,9 +112,9 @@ angular.module('starter.services', [])
     },
     search:function(search){
       console.log("in search");
-      //if its a city, you'll have to try to parse that somehow.... (this will become more of issue as you go...)
-      console.log(urls[enviroment]+`/search/${search.type}/${search.text}`);
-      return $http.get(`${urls[enviroment]}/search/${search.type}/${search.text}`).then(function(res){
+      console.log(search);
+      console.log(urls[enviroment]+`/search/${search.state}/${search.text}`);
+      return $http.post(`${urls[enviroment]}/search`, search).then(function(res){
         console.log(res);
         var out={
           events:{},
@@ -128,6 +128,8 @@ angular.module('starter.services', [])
         })
         return out;
       })
+
+
     }
   }
 })

@@ -1,14 +1,15 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
-  
-    <h1>Events in your state</h1>
+
+    <h2>Events in your state</h2>
 
     <div class="card" ng-repeat="event in view.events">
-      <h4 ng-click="showEvent(event)">{{event.name}}</h4> <!-- on click, go to display page for the event-->
+      <div class="event">
+        <h4 ng-click="showEvent(event)">{{event.name}}</h4> <!-- on click, go to display page for the event-->
+        <h6>{{event.city}}</h6>
+      </div>
     </div>
-    <button ng-click="logout()" class="button button-calm">
-      Logout
-    </button>
+
 
   </ion-content>
 </ion-view>

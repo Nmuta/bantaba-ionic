@@ -1,1 +1,31 @@
 /* Empty. Add your own CSS if you like */
+.splash{
+   background-color: #522601;
+   height:100%;
+}
+.splashBttn{
+  background-color: #E8E9E8;
+  width: 40%;
+}
+.btnContainer{
+  margin-top: 10%;
+  margin-left: 16%;
+  margin-bottom: 20%;
+}
+.loginBtn{
+  background-color: #E8E9E8;
+  width: 80%;
+  margin-top: 5%;
+  margin-left: 10%;
+}
+.loginCon{
+  margin-top: 20%;
+}
+.event{
+  padding-left: 5%;
+}
+
+.banTabs{
+  background-color: #EDF9FF;
+
+}

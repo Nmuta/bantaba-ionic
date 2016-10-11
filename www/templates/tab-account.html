@@ -1,7 +1,8 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
-    <button ng-click="logout()" class="button button-calm">
+      <h1>{{user.username}}</h1>
+    <button ng-click="logout()" class="button loginBtn">
       Logout
     </button>
     </ion-list>
@@ -13,13 +14,13 @@
       <!--approving stuff (how do you do this........)-have the performer request to perform at the event, and the admin validates them
           -that'd need another collumn in the event+performers table. Keep the validated thing n the performers table- note of the stories seem to refrence it... -> make it irrelevent for now, possibly implement it later?
       -->
-      <button ng-click="toCreateEvent()">
+      <button ng-click="toCreateEvent()"  class="button loginBtn">
         Create Event
       </button>
-      <button ng-click="toCreatePerformer()">
+      <button ng-click="toCreatePerformer()" class="button loginBtn">
         Create Performer
       </button>
-      <button ng-click="toList()">
+      <button ng-click="toList()" class="button loginBtn">
         View All Events and Performers
       </button>
     </div>
@@ -116,8 +117,8 @@
         <div>
           {{view.performer.validated}}
         </div>
-        <button ng-show="!view.editing" ng-click="edit()">Edit</button>
-        <button ng-show="view.editing" ng-click="edit()">Save</button>
+        <button ng-show="!view.editing" ng-click="edit()" class="button loginBtn">Edit</button>
+        <button ng-show="view.editing" ng-click="edit()" class="button loginBtn">Save</button>
       <div>
         Notify Followers:
         <label class="item-input-wrapper" >
