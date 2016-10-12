@@ -113,13 +113,13 @@ start<ion-view view-title="Event">
         {{performer.name}}
       </a>
     </div>
-      <button ng-show="!view.following" ng-click="follow()" class="button button-calm">
+      <button ng-show="!view.following" ng-click="follow()" class="button loginBtn">
         Follow This Event
       </button>
-      <button ng-show="view.following" ng-click="unFollow()" class="button button-calm">
+      <button ng-show="view.following" ng-click="unFollow()" class="button loginBtn">
         Unfollow This Event
       </button>
-      <button ng-click="toSearch()">Search</button>
+      <button ng-click="toSearch()" class="button loginBtn">Search</button>
       <div ng-show="user.accountType===3">
         <button ng-show="!view.performing" ng-click="addPerformance()" class="button button-calm">
           Add Performance
@@ -129,12 +129,12 @@ start<ion-view view-title="Event">
         </button>
       </div>
       <div ng-show="user.accountType===1">
-        <button ng-click="confirmDelete()">Delete</button>
-        <button ng-click="toList()">
+        <button ng-click="confirmDelete()" class="button loginBtn">Delete</button>
+        <button ng-click="toList()" class="button loginBtn">
           View All Events and Performers
         </button>
-        <button ng-show="!view.editing" ng-click="edit()">Edit</button>
-        <button ng-show="view.editing" ng-click="edit()">Save</button>
+        <button ng-show="!view.editing" class="button loginBtn" ng-click="edit()">Edit</button>
+        <button ng-show="view.editing" class="button loginBtn" ng-click="edit()">Save</button>
       </div>
   </ion-content>
 </ion-view>

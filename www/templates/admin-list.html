@@ -4,9 +4,8 @@
     <h1>Events</h1>
     <!-- date filter first i guess, rework later??? -->
     <ion-checkbox ng-model="view.search.apply">Apply Filter</ion-checkbox>
-    <ion-checkbox ng-model="view.search.apply">Show Past Events</ion-checkbox>
 
-    <button ng-click="editFilter()">Change Filter</button>
+    <button ng-click="editFilter()" class="button loginBtn">Change Filter</button>
     <div ng-show="view.editingFilter">
       <div>
         <h3>Starts before:</h3>
@@ -46,6 +45,6 @@
       <div ng-repeat="performer in data.performers">
         <h4 ng-click="showPerformer(performer)">{{performer.name}}</h4> <!-- on click, go to display page for the event-->
       </div>
-      <button ng-click="toAccount()">Back to Account Page</button>
+      <button ng-click="toAccount()" class="button loginBtn">Back to Account Page</button>
   </ion-content>
 </ion-view>

@@ -2,13 +2,13 @@
   <ion-content>
     <div ng-show="!view.editing">
       <div>
-      {{view.performer.name}}
+      Name: {{view.performer.name}}
       </div>
       <div>
-        {{view.performer.bio}}
+      Bio:  {{view.performer.bio}}
       </div>
       <div>
-        {{view.performer.state}}
+      State:  {{view.performer.state}}
       </div>
     </div>
     <div  ng-show="view.editing">
@@ -84,10 +84,10 @@
           </label>
         </div>
       </div>
-    <button ng-show="!view.following" ng-click="follow()" class="button button-calm">
+    <button ng-show="!view.following" ng-click="follow()" class="button loginBtn">
       Follow This Performer
     </button>
-    <button ng-show="view.following" ng-click="unFollow()" class="button button-calm">
+    <button ng-show="view.following" ng-click="unFollow()" class="button loginBtn">
       Unfollow This Performer
     </button>
     <!-- <div class="list">
@@ -107,19 +107,19 @@
         {{notification.text}}
       </p>
     </div>
-    <button ng-click="toSearch()">Search</button>
+    <button ng-click="toSearch()" class="button loginBtn">Search</button>
 
     <div ng-show="user.accountType===1">
       <!--show validated thing  -->
-      <div>
+      <!-- <div>
         {{view.performer.validated}}
-      </div>
-      <button ng-click="confirmDelete()">Delete</button>
-      <button ng-click="toList()">
+      </div> -->
+      <button ng-click="confirmDelete()" class="button loginBtn">Delete</button>
+      <button ng-click="toList()" class="button loginBtn">
         View All Events and Performers
       </button>
-      <button ng-show="!view.editing" ng-click="edit()">Edit</button>
-      <button ng-show="view.editing" ng-click="edit()">Save</button>
+      <button ng-show="!view.editing" ng-click="edit()" class="button loginBtn">Edit</button>
+      <button ng-show="view.editing" ng-click="edit()" class="button loginBtn">Save</button>
 
     </div>
 

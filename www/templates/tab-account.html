@@ -1,10 +1,8 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
-      <h1>{{user.username}}</h1>
-    <button ng-click="logout()" class="button loginBtn">
-      Logout
-    </button>
+      <h5>Username: {{user.username}}</h5>
+
     </ion-list>
     <!-- if admin, admin shit goes here ng-show... make sure you're validating stuff all the time-->
     <!-- if performer, performer shit goes here -->
@@ -114,14 +112,12 @@
         </div>
         Followers: {{view.performer.follower_count}}
 
-        <div>
-          {{view.performer.validated}}
-        </div>
+
         <button ng-show="!view.editing" ng-click="edit()" class="button loginBtn">Edit</button>
         <button ng-show="view.editing" ng-click="edit()" class="button loginBtn">Save</button>
       <div>
         Notify Followers:
-        <label class="item-input-wrapper" >
+        <label class="item item-input">
           <input type="text" ng-model="notification.text"/>
 
         </label>
@@ -133,12 +129,12 @@
             <!--make this take dates later than now if possible... time too?  -->
           </label>
         </div>
-        <button  ng-click="submitNotification()">Notify</button>
-        <button ng-click="showNotifications()">Show and Edit Past Notifications</button>
+        <button  ng-click="submitNotification()" class="button loginBtn">Notify</button>
+        <button ng-click="showNotifications()" class="button loginBtn">Show and Edit Past Notifications</button>
         <div ng-show="view.showNoti" ng-repeat="note in view.notifications">
           {{note.text}}
         </div>
-
+      </div>
         <!--put option for date here later...  -->
       <div>
         Performing at:
@@ -149,5 +145,8 @@
       <!-- just put it here?? -->
       <!--add events to perform at  -->
     </div>
+    <button ng-click="logout()" class="button loginBtn">
+      Logout
+    </button>
   </ion-content>
 </ion-view>
