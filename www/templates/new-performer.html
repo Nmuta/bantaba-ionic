@@ -2,23 +2,37 @@
   <ion-content class="padding">
 
     <form ng-submit='submitPerformer(); eventForm.$setPristine(); form.clear();' name="PerformerForm">
-      <label class="item-input-wrapper ">
-          <input type="text" ng-model="input.name" placeholder="Name" required>
+      <label class="item item-input" >
+        <div class="input-label">
+           Name
+         </div>
+         <input type="text" ng-model="input.name" placeholder="Name" required/>
       </label>
-      <label class="item-input-wrapper ">
-          <input type="text" ng-model="input.username" placeholder="Username" required>
-      </label>
-      <label class="item-input-wrapper ">
-          <input type="text" ng-model="input.password" placeholder="Password" required>
-      </label>
-        <div>
-          <label class="item item-input">
-            <span class="input-label">Bio</span>
-            <input ng-model="input.bio" type="textArea" required>
-          </label>
-        </div>
-      <label class="item item-input item-select">
 
+      <label class="item item-input" >
+        <div class="input-label">
+           Username
+         </div>
+         <input type="text" ng-model="input.username" placeholder="Username" required>
+      </label>
+      <label class="item item-input" >
+        <div class="input-label">
+           Password
+         </div>
+         <input type="password" ng-model="input.password" placeholder="Password" required>
+      </label>
+      <label class="item item-input" >
+        <div class="input-label">
+           Bio
+         </div>
+         <input ng-model="input.bio" type="textArea" required>
+      </label>
+
+
+        <label class="item item-input item-select">
+          <div class="input-label">
+             State
+           </div>
         <select ng-model="input.state" required>
         	<option value="AL">Alabama</option>
         	<option value="AK">Alaska</option>
@@ -73,11 +87,10 @@
         	<option value="WY">Wyoming</option>
         </select>
       </label>
-        <input class="" type="submit"value="Create Performer">
+        <input class="button loginBtn" type="submit"value="Create Performer">
 
     </form>
-    <button ng-click="logInput()">Log</button>
-    <button ng-click="toAccount()">Back to Account Page</button>
+    <button class="button loginBtn" ng-click="toAccount()">Back to Account Page</button>
 
   </ion-content>
 

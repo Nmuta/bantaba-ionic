@@ -2,27 +2,30 @@
 <ion-view view-title="New Event">
   <ion-content class="padding">
 
-    <form ng-submit='submitEvent(); eventForm.$setPristine(); form.clear();' name="eventForm">
-      <label class="item-input-wrapper ">
-          <input type="text" ng-model="input.name" placeholder="Name" required>
-      </label>
+    <form ng-submit='submitEvent(); eventForm.$setPristine(); form.clear();' class="list" name="eventForm">
 
-        <div>
-          <h3>Start date:</h3>
-          <label class="item item-input">
-            <span class="input-label">Date</span>
-            <input ng-model="input.startDate" type="date" required>
-          </label>
-        </div>
-        <div>
-            <h3>End date:</h3>
-          <label class="item item-input">
-            <span class="input-label">Date</span>
-            <input ng-model="input.endDate" type="date" required>
-          </label>
-        </div>
+        <label class="item item-input" >
+          <div class="input-label">
+             Name
+           </div>
+           <input type="text" ng-model="input.name" placeholder="Name" required/>
+        </label>
+        <label class="item item-input" >
+          <div class="input-label">
+             Start date
+           </div>
+           <input ng-model="input.startDate" type="date" required>
+        </label>
+        <label class="item item-input" >
+          <div class="input-label">
+             End date
+           </div>
+           <input ng-model="input.endDate" type="date" required>
+        </label>
         <label class="item item-input item-select">
-
+          <div class="input-label">
+             State
+           </div>
           <select ng-model="input.state" required>
           	<option value="AL">Alabama</option>
           	<option value="AK">Alaska</option>
