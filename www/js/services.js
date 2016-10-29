@@ -50,6 +50,17 @@ angular.module('starter.services', [])
   }
   var enviroment= 'hosted'
   return {
+    clear:function(){
+      data={
+        events:{},
+        performers:{},
+        following:{}
+      },
+      selected={
+        events:null,
+        performers:null
+      }
+    },
     update:function(){
       return $http.get(urls[enviroment]+'/events/').then(function(res){
         return $http.get(urls[enviroment]+'/performers/').then(function(res2){

@@ -418,6 +418,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.logout=function(){
     User.logout();
     window.localStorage.removeItem("token");
+    Data.clear()
     User.loggedRedirect();
   }
   $scope.view={}
